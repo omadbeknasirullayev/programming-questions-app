@@ -11,6 +11,8 @@ class LanguageRoute {
       await new LanguageController(this.req, this.res).create()
     } else if (this.req.method == 'GET' && this.req.url.startsWith('/language/get-one/')) {
       await new LanguageController(this.req, this.res).getOne()
+    } else if (this.req.method == 'GET' && this.req.url.startsWith('language/get-all')) {
+      await new LanguageController(this.req, this.res).getAll()
     }
   }
 }

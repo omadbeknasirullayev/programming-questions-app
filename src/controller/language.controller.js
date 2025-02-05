@@ -1,9 +1,7 @@
 const { LanguageValidation } = require("../validation")
 const { LanguageService } = require('../service')
 const { bodyParser } = require('../lib')
-const url = require('url')
-
-
+const ErrorHandler = require('../lib/erro-handler')
 
 class LanguageController {
   constructor(req, res) {
@@ -11,7 +9,7 @@ class LanguageController {
     this.res = res
   }
 
-  /** create language */
+  /** create language controller */
   async create() {
     try {
       const data = await bodyParser(req)
@@ -22,16 +20,17 @@ class LanguageController {
       if (languageValidation.isValid()) {
         this.res.writeHead(400, { 'Content-Type': 'application/json' })
         this.res.end(JSON.stringify({ message: languageValidation.getErrors() }))
-
       } else {
-        await new LanguageService(req, res).create(data)
+        const result = await new LanguageService(req, res).create(data)
+        this.res.writeHead(201, { 'Content-Type': 'application/json' })
+        this.res.end(JSON.stringify({ statusCode: 201, data: result, message: 'success' }))
       }
     } catch (error) {
-      console.log(error);
+      new ErrorHandler(this.res, error, error.message)
     }
   }
 
-  /** get one language */
+  /** get one language controller*/
   async getOne() {
     try {
       const param = this.req.url.split('/')[3]
@@ -47,6 +46,20 @@ class LanguageController {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  /** get all language controller */
+  async getAll() {
+    try {
+      await new LanguageService(this.req, this.res).getAll()
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /** delete language controller */
+  async delete(param) {
+
   }
 }
 
