@@ -1,5 +1,5 @@
-const Language = require('./language/language.service')
+const LanguageService = require("./language.service");
 
 module.exports = {
-  LanguageService: Language
-}
+  LanguageService,
+};

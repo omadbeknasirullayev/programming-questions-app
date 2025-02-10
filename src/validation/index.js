@@ -1,7 +1,5 @@
-const LanguageValidation = require('./language.validation')
-
+const LanguageValidation = require("./language.validation");
 
 module.exports = {
-  LanguageValidation
-}
-
+  LanguageValidation,
+};
