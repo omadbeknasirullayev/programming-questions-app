@@ -1,4 +1,4 @@
-const { LanguageValidation } = require("../../validation");
+const { LanguageValidation } = require("../../infratructure/validation");
 const { ErrorHandler, ValidationError } = require("../lib");
 
 /**

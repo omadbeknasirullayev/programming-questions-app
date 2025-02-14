@@ -1,4 +1,4 @@
-const db = require("../config/postgres-client");
+const db = require("../database/postgres-client");
 const { LanguageModel } = require("../model");
 const { CustomError, ErrorHandler } = require("../infratructure/helper/lib");
 

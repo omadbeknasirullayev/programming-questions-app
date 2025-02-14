@@ -1,3 +1,4 @@
+const { LanguageCreateService } = require("../../application/use-cases/language");
 const { SuccessResponse } = require("../infratructure/helper/lib");
 const { bodyParser, getParam } = require("../infratructure/helper/utility");
 const { LanguageValidation } = require("../infratructure/validation");
@@ -7,6 +8,7 @@ class LanguageController {
   constructor(req, res) {
     this.req = req;
     this.res = res;
+    this.createLanguage = new LanguageCreateService(req, res)
     this.response = new SuccessResponse(res);
     this.service = new LanguageService(req, res);
   }
@@ -21,7 +23,7 @@ class LanguageController {
       throw new ValidationError(422, validate.getErrors());
     }
 
-    const result = await this.service.create(data);
+    const result = await this.createLanguage.create(data);
     await this.response(201, result, "success");
   }
 
