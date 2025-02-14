@@ -1,6 +1,6 @@
-const { LanguageController } = require("../controller");
-const { ErrorHandler } = require("../infratructure/helper/lib");
-const { rateLimiter } = require("../infratructure/helper/utility");
+const LanguageController = require("./language.controller");
+const { ErrorHandler } = require("../../shared/helper/lib");
+const { rateLimiter } = require("../../shared/helper/utility");
 
 class LanguageRoute {
   constructor(req, res) {

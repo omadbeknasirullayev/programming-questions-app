@@ -1,4 +1,4 @@
-const LanguageRoute = require("./language.routes");
+const LanguageRoute = require("../module/language/language.routes");
 
 class AllRoutes {
   static async route(req, res) {

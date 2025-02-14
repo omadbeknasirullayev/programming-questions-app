@@ -1,6 +1,6 @@
-const db = require("../config/postgres-client");
-const { LanguageModel } = require("../model");
-const { CustomError, ErrorHandler } = require("../infratructure/helper/lib");
+const db = require("../../config/postgres-client");
+const { LanguageModel } = require("../../model");
+const { CustomError, ErrorHandler } = require("../../shared/helper/lib");
 
 /** Language Repository */
 class LanguageRepository {
@@ -48,6 +48,37 @@ class LanguageRepository {
       const query = `SELECT * FROM languages order by position ASC;`;
       const data = await this.db.query(query);
       return data;
+    } catch (error) {
+      new ErrorHandler(this.res, error);
+    }
+  }
+
+  /**
+   * update Language Repository (faqat berilgan keylarni yangilaydi)
+   * @param {number} id
+   * @param {Object} body
+   * @return {LanguageModel}
+   */
+  async update(id, body) {
+    try {
+      const keys = Object.keys(body);
+      if (keys.length === 0) throw new Error("No fields to update");
+
+      // Dinamik SET qismi: ["name = $1", "position = $2"]
+      const setQuery = keys
+        .map((key, index) => `${key} = $${index + 1}`)
+        .join(", ");
+
+      // Query stringini hosil qilish
+      const query = `UPDATE languages SET ${setQuery} WHERE id = $${
+        keys.length + 1
+      } RETURNING *;`;
+
+      // Queryga qo‘yiladigan qiymatlar massivi
+      const values = [...keys.map((key) => body[key]), id];
+
+      const data = await this.db.query(query, values);
+      return data[0];
     } catch (error) {
       new ErrorHandler(this.res, error);
     }

@@ -1,13 +1,13 @@
-const { SuccessResponse } = require("../infratructure/helper/lib");
-const { bodyParser, getParam } = require("../infratructure/helper/utility");
-const { LanguageValidation } = require("../infratructure/validation");
-const { LanguageService } = require("../service");
+const { SuccessResponse, ValidationError } = require("../../shared/helper/lib");
+const { LanguageValidation } = require("../../shared/validation");
+const LanguageService = require("./language.service");
+const { bodyParser, getParam } = require("../../shared/helper/utility");
 
 class LanguageController {
   constructor(req, res) {
     this.req = req;
     this.res = res;
-    this.response = new SuccessResponse(res);
+    this.response = new SuccessResponse(res).response;
     this.service = new LanguageService(req, res);
   }
 
@@ -33,9 +33,25 @@ class LanguageController {
 
   /** get one language controller api */
   async getOne() {
-    const id = getParam(this.req, this.res);
+    const id = await getParam(this.req, this.res);
 
     const result = await this.service.getOne(id);
+    await this.response(200, result, "success");
+  }
+
+  /** update language controller api */
+  async update() {
+    const id = await getParam(this.req, this.res);
+    const body = await bodyParser(this.req);
+
+    const validate = new LanguageValidation(body);
+    validate.updateValidation();
+
+    if (validate.isValid()) {
+      throw new ValidationError(422, validate.getErrors());
+    }
+
+    const result = await this.service.update(id, body);
     await this.response(200, result, "success");
   }
 

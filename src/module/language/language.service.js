@@ -1,6 +1,6 @@
-const { LanguageRepository } = require("../repository");
-const { CustomError, ErrorHandler } = require("../infratructure/helper/lib");
-const { LanguageModel } = require("../model");
+const LanguageRepository = require("./language.repository");
+const { CustomError, ErrorHandler } = require("../../shared/helper/lib");
+const { LanguageModel } = require("../../model");
 
 class LanguageService {
   constructor(req, res) {
@@ -37,34 +37,49 @@ class LanguageService {
         throw new CustomError(404, "Not found language");
       }
 
-      return data
+      return data;
     } catch (error) {
       new ErrorHandler(this.res, error);
     }
   }
 
-  /** 
-   * get all language Service 
+  /**
+   * get all language Service
    * @return {LanguageModel[]}
-  */
+   */
   async getAll() {
     try {
       const data = await this.repository.getAll();
-      return data
+      return data;
     } catch (error) {
       new ErrorHandler(this.res, error);
     }
   }
 
-  /** 
-   * delete language Service 
+  /**
+   * update language Service
    * @param {number} id
-  */
+   * @param {LanguageModel} body
+   */
+  async update(id, body) {
+    try {
+      await this.getOne(id);
+      const data = await this.repository.update(id, body);
+      return data;
+    } catch (error) {
+      new ErrorHandler(this.res, error);
+    }
+  }
+
+  /**
+   * delete language Service
+   * @param {number} id
+   */
   async remove(id) {
     await this.getOne(id);
 
     const data = await this.repository.remove(id);
-    return data
+    return data;
   }
 }
 
