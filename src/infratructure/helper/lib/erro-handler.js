@@ -24,10 +24,15 @@ class ErrorHandler {
     } else if (this.error instanceof ValidationError) {
       status = this.error.statusCode;
       message = this.error.message;
+    } else if (this.error.msBeforeNext) { 
+      status = 429
+      message = "To many requests, please tyr again later!"
     } else {
       status = 500;
-      message = "Internal server error";
+      message = "Internal server error!";
     }
+
+    console.log(this.error);
 
     this.res.writeHead(status, { "Content-Type": "application/json" });
     this.res.end(

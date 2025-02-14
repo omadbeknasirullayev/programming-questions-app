@@ -1,6 +1,6 @@
 const db = require("../config/postgres-client");
 const { LanguageModel } = require("../model");
-const { CustomError, ErrorHandler } = require("../infratructure/lib");
+const { CustomError, ErrorHandler } = require("../infratructure/helper/lib");
 
 /** Language Repository */
 class LanguageRepository {
@@ -30,14 +30,10 @@ class LanguageRepository {
    * @param {number} param
    * @return {LanguageModel}
    */
-  async getOne(param) {
+  async getOne(id) {
     try {
-      const query = `SELECT * FROM languages WHERE id = ${param};`;
+      const query = `SELECT * FROM languages WHERE id = ${id};`;
       const data = await this.db.query(query);
-      if (!data[0]) {
-        throw new CustomError(404, "Not found language");
-      }
-
       return data[0];
     } catch (error) {
       new ErrorHandler(this.res, error);
@@ -59,10 +55,10 @@ class LanguageRepository {
 
   /**
    * remove Language Repository
-   * @param {number} param
+   * @param {number} id
    */
-  async remove(param) {
-    const query = `DELETE languages where id = ${param};`;
+  async remove(id) {
+    const query = `DELETE FROM languages where id = ${id};`;
     const data = await this.db.query(query);
 
     return data;

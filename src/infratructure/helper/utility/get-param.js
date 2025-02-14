@@ -1,5 +1,5 @@
 const { LanguageValidation } = require("../../validation");
-const { ErrorHandler } = require("../lib");
+const { ErrorHandler, ValidationError } = require("../lib");
 
 /**
  * get params function
@@ -11,7 +11,7 @@ async function getParam(req, res) {
     let url = req.url.split("/");
     const param = url[url.length - 1];
     const validate = new LanguageValidation(param);
-    await validate.getOneValidate();
+    await validate.getOneParamValidate();
 
     if (validate.isValid()) {
       throw new ValidationError(422, validate.getErrors());

@@ -1,7 +1,8 @@
-class LanguageValidation {
+const BaseValidation = require("./base.validation");
+
+class LanguageValidation extends BaseValidation {
   constructor(data) {
-    this.data = data;
-    this.error = [];
+    super(data, [])
   }
 
   async createValidate() {
@@ -18,23 +19,6 @@ class LanguageValidation {
     }
   }
 
-  async getOneValidate() {
-    try {
-      if (!/^[0-9]+$/.test(this.data)) {
-        this.error.push("Param must be number");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  getErrors() {
-    return this.error;
-  }
-
-  isValid() {
-    return this.error.length;
-  }
 }
 
 module.exports = LanguageValidation;

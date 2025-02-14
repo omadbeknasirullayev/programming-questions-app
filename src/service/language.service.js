@@ -1,79 +1,70 @@
-const { LanguageValidation } = require("../validation");
 const { LanguageRepository } = require("../repository");
-const {
-  bodyParser,
-  SuccessResponse,
-  ValidationError,
-  CustomError,
-  ErrorHandler,
-} = require("../infratructure/lib");
-const { getParam } = require("../infratructure/utility");
+const { CustomError, ErrorHandler } = require("../infratructure/helper/lib");
+const { LanguageModel } = require("../model");
 
 class LanguageService {
   constructor(req, res) {
     this.req = req;
     this.res = res;
-    this.response = new SuccessResponse(res);
     this.repository = new LanguageRepository(req, res);
   }
 
-  /** create language Service */
-  async create() {
+  /**
+   * create language Service
+   * @param {LanguageModel} data
+   * @return {LanguageModel}
+   */
+  async create(data) {
     try {
-      const data = await bodyParser(this.req);
+      const result = await this.repository.create(data);
+      return result;
+    } catch (error) {
+      new ErrorHandler(this.res, error);
+    }
+  }
 
-      const validate = new LanguageValidation(data);
-      await validate.createValidate();
+  /**
+   * get one language Service
+   * @param {number} id
+   * @return {LanguageModel}
+   */
+  async getOne(id) {
+    try {
+      console.log(id);
+      const data = await this.repository.getOne(id);
 
-      if (validate.isValid()) {
-        throw new ValidationError(422, validate.getErrors());
+      if (!data) {
+        throw new CustomError(404, "Not found language");
       }
 
-      const result = await this.repository.create(data);
-
-      this.res.writeHead(201, { "Content-Type": "application/json" });
-      this.res.end(
-        JSON.stringify({ statusCode: 201, data: result, message: "success" }),
-      );
+      return data
     } catch (error) {
       new ErrorHandler(this.res, error);
     }
   }
 
-  /** get one language Service*/
-  async getOne() {
-    try {
-      const param = await getParam(this.req, this.res);
-
-      const data = await this.repository.getOne(param);
-
-      await this.response.response(200, data, "success");
-    } catch (error) {
-      new ErrorHandler(this.res, error);
-    }
-  }
-
-  /** get all language Service */
+  /** 
+   * get all language Service 
+   * @return {LanguageModel[]}
+  */
   async getAll() {
     try {
       const data = await this.repository.getAll();
-      await this.response(200, data, "success");
+      return data
     } catch (error) {
       new ErrorHandler(this.res, error);
     }
   }
 
-  /** delete language Service */
-  async remove() {
-    const param = await getParam(this.req, this.res);
-    const checkData = await this.repository.getOne(param);
-    if (!checkData) {
-      throw new CustomError(404, "Language not found");
-    }
+  /** 
+   * delete language Service 
+   * @param {number} id
+  */
+  async remove(id) {
+    await this.getOne(id);
 
-    const data = await this.repository.remove(param);
-
-    await this.response(200, data, "success");
+    const data = await this.repository.remove(id);
+    return data
   }
 }
 
