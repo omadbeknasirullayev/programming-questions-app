@@ -1,5 +1,6 @@
 const { AdminModel } = require("../../model");
-const { ErrorHandler } = require("../../shared/helper/lib");
+const { ErrorHandler, CustomError } = require("../../shared/helper/lib");
+const { hashed } = require("../../shared/helper/utility");
 const AdminRepository = require("./admin.repository");
 
 class AdminService {
@@ -16,7 +17,14 @@ class AdminService {
    */
   async create(body) {
     try {
+      const check = await this.repository.findByUsername(body.username);
+      console.log("check");
+      if (check) {
+        throw new CustomError(409, "This username already exists!");
+      }
+      body.password = await hashed(body.password);
       const data = await this.repository.create(body);
+      await this.repository.closeDb();
       return data;
     } catch (error) {
       new ErrorHandler(this.res, error);
@@ -24,5 +32,4 @@ class AdminService {
   }
 }
 
-
-module.exports = AdminService
+module.exports = AdminService;

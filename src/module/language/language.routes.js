@@ -9,8 +9,10 @@ class LanguageRoute {
     this.controller = new LanguageController(req, res);
   }
 
-  async route(method, url) {
+  async route() {
     try {
+      let method = this.req.method;
+      let url = this.req.url;
       await rateLimiter.consume(this.req.socket.remoteAddress);
       if (this.req.method == "POST" && this.req.url == "/language/create") {
         await this.controller.create();

@@ -25,23 +25,6 @@ class PostgreSQLClient {
     }
   }
 
-  async migrateTables() {
-    const language = `
-    CREATE TABLE IF NOT EXISTS languages (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(128) NOT NULL,
-      position INTEGER NOT NULL
-    );
-    `
-
-    try {
-      await this.query(language)
-      console.log(`ready table`);
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   close() {
     this.pool.end();
   }
