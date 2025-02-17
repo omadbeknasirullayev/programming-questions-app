@@ -1,18 +1,21 @@
 const { SuccessResponse, ValidationError } = require("../../shared/helper/lib");
 const { LanguageValidation } = require("../../shared/validation");
 const LanguageService = require("./language.service");
+const { AuthGuard } = require("../../shared/guard");
 const { bodyParser, getParam } = require("../../shared/helper/utility");
 
 class LanguageController {
   constructor(req, res) {
     this.req = req;
     this.res = res;
+    this.authGuard = new AuthGuard(req, res);
     this.response = new SuccessResponse(res).response;
     this.service = new LanguageService(req, res);
   }
 
   /** create language controller api */
   async create() {
+    await this.authGuard.check("admin");
     const data = await bodyParser(this.req);
     const validate = new LanguageValidation(data);
     await validate.createValidate();
@@ -41,6 +44,7 @@ class LanguageController {
 
   /** update language controller api */
   async update() {
+    await this.authGuard.check("admin");
     const id = await getParam(this.req, this.res);
     const body = await bodyParser(this.req);
 
@@ -57,6 +61,7 @@ class LanguageController {
 
   /** remove language controller api */
   async remove() {
+    await this.authGuard.check("admin");
     const id = getParam(this.req, this.res);
 
     const result = await this.service.remove(id);
