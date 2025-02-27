@@ -1,13 +1,12 @@
 const db = require("../../config/postgres-client");
 const { LanguageModel } = require("../../model");
-const { CustomError, ErrorHandler } = require("../../shared/helper/lib");
+const { BaseRepository } = require("../../shared/database");
+const { ErrorHandler } = require("../../shared/helper/lib");
 
 /** Language Repository */
-class LanguageRepository {
+class LanguageRepository extends BaseRepository {
   constructor(req, res) {
-    this.req = req;
-    this.res = res;
-    this.db = new db();
+    super(req, res, "languages");
   }
 
   /**
@@ -26,34 +25,6 @@ class LanguageRepository {
   }
 
   /**
-   * get one language Repository
-   * @param {number} param
-   * @return {LanguageModel}
-   */
-  async getOne(id) {
-    try {
-      const query = `SELECT * FROM languages WHERE id = ${id};`;
-      const data = await this.db.query(query);
-      return data[0];
-    } catch (error) {
-      new ErrorHandler(this.res, error);
-    }
-  }
-
-  /** get one language Repository
-   * @return {LanguageModel[]}
-   */
-  async getAll() {
-    try {
-      const query = `SELECT * FROM languages order by position ASC;`;
-      const data = await this.db.query(query);
-      return data;
-    } catch (error) {
-      new ErrorHandler(this.res, error);
-    }
-  }
-
-  /**
    * update Language Repository (faqat berilgan keylarni yangilaydi)
    * @param {number} id
    * @param {Object} body
@@ -64,17 +35,14 @@ class LanguageRepository {
       const keys = Object.keys(body);
       if (keys.length === 0) throw new Error("No fields to update");
 
-      // Dinamik SET qismi: ["name = $1", "position = $2"]
       const setQuery = keys
         .map((key, index) => `${key} = $${index + 1}`)
         .join(", ");
 
-      // Query stringini hosil qilish
       const query = `UPDATE languages SET ${setQuery} WHERE id = $${
         keys.length + 1
       } RETURNING *;`;
 
-      // Queryga qo‘yiladigan qiymatlar massivi
       const values = [...keys.map((key) => body[key]), id];
 
       const data = await this.db.query(query, values);
@@ -82,17 +50,6 @@ class LanguageRepository {
     } catch (error) {
       new ErrorHandler(this.res, error);
     }
-  }
-
-  /**
-   * remove Language Repository
-   * @param {number} id
-   */
-  async remove(id) {
-    const query = `DELETE FROM languages where id = ${id};`;
-    const data = await this.db.query(query);
-
-    return data;
   }
 }
 

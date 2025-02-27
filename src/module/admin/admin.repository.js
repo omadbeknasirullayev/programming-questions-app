@@ -1,12 +1,10 @@
-const db = require("../../config/postgres-client");
 const { AdminModel } = require("../../model");
+const { BaseRepository } = require("../../shared/database");
 const { ErrorHandler } = require("../../shared/helper/lib");
 
-class AdminRepository {
+class AdminRepository extends BaseRepository {
   constructor(req, res) {
-    this.req = req;
-    this.res = res;
-    this.db = new db();
+    super(req, res, "admins");
   }
 
   /**
@@ -25,7 +23,7 @@ class AdminRepository {
       ]);
       return data;
     } catch (error) {
-      await this.closeDb()
+      await this.closeDb();
       await new ErrorHandler(this.res, error);
     }
   }
@@ -42,14 +40,6 @@ class AdminRepository {
       return data[0];
     } catch (error) {
       await new ErrorHandler(this.res, error);
-    }
-  }
-
-  async closeDb() {
-    try {
-      await this.db.close();
-    } catch (error) {
-      await new ErrorHandler(this.res, error)
     }
   }
 }

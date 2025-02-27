@@ -76,10 +76,14 @@ class LanguageService {
    * @param {number} id
    */
   async remove(id) {
-    await this.getOne(id);
+    try {
+      await this.getOne(id);
 
-    const data = await this.repository.remove(id);
-    return data;
+      const data = await this.repository.remove(id);
+      return data;
+    } catch (error) {
+      await this.repository;
+    }
   }
 }
 

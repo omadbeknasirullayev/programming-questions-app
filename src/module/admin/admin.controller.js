@@ -5,7 +5,7 @@ const {
   ErrorHandler,
   ValidationError,
 } = require("../../shared/helper/lib");
-const { bodyParser } = require("../../shared/helper/utility");
+const { bodyParser, getParam } = require("../../shared/helper/utility");
 const { AdminValidation } = require("../../shared/validation");
 const AdminService = require("./admin.service");
 
@@ -21,7 +21,7 @@ class AdminController {
   /** create admin controller */
   async create() {
     try {
-      await this.authGuard.check("admin")
+      await this.authGuard.check("admin");
       const body = await bodyParser(this.req);
       const validate = new AdminValidation(body);
       await validate.createValidation();
@@ -32,6 +32,29 @@ class AdminController {
       const result = await this.service.create(body);
 
       await this.response(201, result, "success");
+    } catch (error) {
+      await new ErrorHandler(this.res, error);
+    }
+  }
+
+  /** find all admin controller */
+  async findAll() {
+    try {
+      await this.authGuard.check("admin");
+      const result = await this.service.findAll();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await new ErrorHandler(this.res, error);
+    }
+  }
+
+  /** find one admin controller */
+  async findOne() {
+    try {
+      await this.authGuard.check("admin");
+      const id = await getParam(this.req, this.res);
+      const result = await this.service.findOne(id);
+      await this.response(200, result, "success");
     } catch (error) {
       await new ErrorHandler(this.res, error);
     }

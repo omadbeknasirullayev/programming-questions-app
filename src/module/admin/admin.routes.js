@@ -16,8 +16,12 @@ class AdminRoute {
       const url = this.req.url;
       if (method == "POST" && url == "/admin/create") {
         await this.controller.create();
+      } else if (method == "GET" && url == "/admin/get-all") {
+        await this.controller.findAll();
+      } else if (method == "GET" && url.startsWith("/admin/get-one/")) {
+        await this.controller.findOne();
       } else {
-        throw new CustomError(404, "This endpoint does not exist!")
+        throw new CustomError(404, "This endpoint does not exist!");
       }
     } catch (error) {}
   }

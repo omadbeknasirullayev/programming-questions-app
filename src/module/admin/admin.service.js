@@ -18,7 +18,6 @@ class AdminService {
   async create(body) {
     try {
       const check = await this.repository.findByUsername(body.username);
-      console.log("check");
       if (check) {
         throw new CustomError(409, "This username already exists!");
       }
@@ -28,6 +27,56 @@ class AdminService {
       return data;
     } catch (error) {
       new ErrorHandler(this.res, error);
+    }
+  }
+
+  /**
+   * find all service
+   * @return {AdminModel[]}
+   */
+  async findAll() {
+    try {
+      const data = await this.repository.findAll();
+      await this.repository.closeDb();
+      return data;
+    } catch (error) {
+      await this.repository.closeDb();
+      new ErrorHandler(this.res, error);
+    }
+  }
+
+  /**
+   * find one admin service
+   * @param {number} id
+   * @return {AdminModel}
+   */
+  async findOne(id) {
+    try {
+      const data = await this.repository.findOne(id);
+      if (!data) {
+        throw new CustomError(404, "Admin not found!");
+      }
+      await this.repository.closeDb();
+      return data;
+    } catch (error) {
+      await this.repository.closeDb();
+      await new ErrorHandler(this.res, error);
+    }
+  }
+
+  /**
+   * delete admin Service
+   * @param {number} id
+   */
+  async remove(id) {
+    try {
+      await this.findOne(id);
+
+      const data = await this.repository.remove(id);
+      return data;
+    } catch (error) {
+      await this.repository.closeDb();
+      await new ErrorHandler(res, error);
     }
   }
 }
