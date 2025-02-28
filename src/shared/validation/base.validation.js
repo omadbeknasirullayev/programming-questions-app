@@ -11,7 +11,7 @@ class BaseValidation {
         this.error.push("Param must be number");
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 

@@ -1,12 +1,10 @@
 const LanguageRepository = require("./language.repository");
-const { CustomError, ErrorHandler } = require("../../shared/helper/lib");
+const { CustomError } = require("../../shared/helper/lib");
 const { LanguageModel } = require("../../model");
 
 class LanguageService {
-  constructor(req, res) {
-    this.req = req;
-    this.res = res;
-    this.repository = new LanguageRepository(req, res);
+  constructor() {
+    this.repository = new LanguageRepository();
   }
 
   /**
@@ -17,9 +15,11 @@ class LanguageService {
   async create(data) {
     try {
       const result = await this.repository.create(data);
+      await this.repository.closeDb();
       return result;
     } catch (error) {
-      new ErrorHandler(this.res, error);
+      await this.repository.closeDb();
+      throw error;
     }
   }
 
@@ -30,16 +30,17 @@ class LanguageService {
    */
   async getOne(id) {
     try {
-      console.log(id);
       const data = await this.repository.getOne(id);
 
       if (!data) {
         throw new CustomError(404, "Not found language");
       }
 
+      await this.repository.closeDb();
       return data;
     } catch (error) {
-      new ErrorHandler(this.res, error);
+      await this.repository.closeDb();
+      throw error;
     }
   }
 
@@ -50,9 +51,11 @@ class LanguageService {
   async getAll() {
     try {
       const data = await this.repository.getAll();
+      await this.repository.closeDb();
       return data;
     } catch (error) {
-      new ErrorHandler(this.res, error);
+      await this.repository.closeDb();
+      throw error;
     }
   }
 
@@ -65,9 +68,11 @@ class LanguageService {
     try {
       await this.getOne(id);
       const data = await this.repository.update(id, body);
+      await this.repository.closeDb();
       return data;
     } catch (error) {
-      new ErrorHandler(this.res, error);
+      await this.repository.closeDb();
+      throw error;
     }
   }
 
@@ -80,9 +85,11 @@ class LanguageService {
       await this.getOne(id);
 
       const data = await this.repository.remove(id);
+      await this.repository.closeDb();
       return data;
     } catch (error) {
-      await this.repository;
+      await this.repository.closeDb();
+      throw error;
     }
   }
 }

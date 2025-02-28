@@ -9,21 +9,21 @@ class AdminValidation extends BaseValidation {
   /** Create validation */
   async createValidation() {
     try {
-      allowedFields = ["fullname", "username", "password"];
-      this.checkExtraFields(allowedFields); // Keraksiz fieldlarni tekshiramiz
+      let allowedFields = ["fullname", "username", "password"];
+      this.checkExtraFields(allowedFields);
 
       this.isString(this.data.fullname, "fullname");
       this.isString(this.data.username, "username");
       this.isString(this.data.password, "password");
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }
 
   /** Update validation */
   async updateValidation() {
     try {
-      allowedFields = ["fullname", "username", "password"];
+      let allowedFields = ["fullname", "username", "password"];
       this.checkExtraFields(allowedFields);
 
       if (Object.keys(this.data).length === 0) {
@@ -40,7 +40,7 @@ class AdminValidation extends BaseValidation {
         this.isString(this.data.password, "password");
       }
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }
 }

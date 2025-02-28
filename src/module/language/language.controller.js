@@ -8,9 +8,9 @@ class LanguageController {
   constructor(req, res) {
     this.req = req;
     this.res = res;
-    this.authGuard = new AuthGuard(req, res);
+    this.authGuard = new AuthGuard(req);
     this.response = new SuccessResponse(res).response;
-    this.service = new LanguageService(req, res);
+    this.service = new LanguageService();
   }
 
   /** create language controller api */
@@ -36,7 +36,7 @@ class LanguageController {
 
   /** get one language controller api */
   async getOne() {
-    const id = await getParam(this.req, this.res);
+    const id = await getParam(this.req);
 
     const result = await this.service.getOne(id);
     await this.response(200, result, "success");
@@ -45,7 +45,7 @@ class LanguageController {
   /** update language controller api */
   async update() {
     await this.authGuard.check("admin");
-    const id = await getParam(this.req, this.res);
+    const id = await getParam(this.req);
     const body = await bodyParser(this.req);
 
     const validate = new LanguageValidation(body);
@@ -62,7 +62,7 @@ class LanguageController {
   /** remove language controller api */
   async remove() {
     await this.authGuard.check("admin");
-    const id = getParam(this.req, this.res);
+    const id = getParam(this.req);
 
     const result = await this.service.remove(id);
     await this.response(200, result, "success");

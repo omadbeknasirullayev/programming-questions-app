@@ -1,14 +1,12 @@
-const { LanguageValidation, ParamValidation } = require("../../validation");
-const { NumberValidation } = require("../../validation/validators");
-const { ErrorHandler, ValidationError, CustomError } = require("../lib");
+const { ParamValidation } = require("../../validation");
+const { ValidationError } = require("../lib");
 
 /**
  * get params function
  * @param {*} req
  * @return {number}
  */
-async function getParam(req, res) {
-  // try {
+async function getParam(req) {
   let url = req.url.split("/");
   const param = url[url.length - 1];
   const validate = new ParamValidation(param);
@@ -19,9 +17,6 @@ async function getParam(req, res) {
   }
 
   return Number(param);
-  // } catch (error) {
-  //   throw error;
-  // }
 }
 
 module.exports = getParam;

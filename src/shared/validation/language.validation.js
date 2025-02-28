@@ -12,15 +12,7 @@ class LanguageValidation extends BaseValidation {
       this.checkExtraFields(allowedFields);
       this.isString(this.name, "name");
       this.isNumber(this.position, "position");
-      // if (!this.data.name || typeof this.data.name !== "string") {
-      //   this.error.push("name field must be string");
-      // }
-
-      // if (!this.data.position || typeof this.data.position !== "number") {
-      //   this.error.push("order field must be number");
-      // }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -42,7 +34,6 @@ class LanguageValidation extends BaseValidation {
         this.isNumber(this.data.position);
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

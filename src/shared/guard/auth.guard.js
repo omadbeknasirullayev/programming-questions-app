@@ -1,12 +1,11 @@
 const AdminRepository = require("../../module/admin/admin.repository");
-const { JWTToken, CustomError, ErrorHandler } = require("../helper/lib");
+const { JWTToken, CustomError } = require("../helper/lib");
 
 class AuthGuard {
-  constructor(req, res) {
+  constructor(req) {
     this.req = req;
-    this.res = res;
-    this.adminRepository = new AdminRepository(req, res);
-    this.jwt = new JWTToken(req, res);
+    this.adminRepository = new AdminRepository();
+    this.jwt = new JWTToken();
   }
 
   /** check authorization  */
@@ -29,7 +28,7 @@ class AuthGuard {
 
       return true;
     } catch (error) {
-      await new ErrorHandler(this.res, error);
+      throw error;
     }
   }
 }

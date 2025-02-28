@@ -1,17 +1,11 @@
-const {
-  CustomError,
-  JWTToken,
-  ErrorHandler,
-} = require("../../shared/helper/lib");
+const { CustomError, JWTToken } = require("../../shared/helper/lib");
 const { compaire } = require("../../shared/helper/utility");
 const AdminRepository = require("../admin/admin.repository");
 
 class AuthService {
-  constructor(req, res) {
-    this.req = req;
-    this.res = res;
-    this.adminRepository = new AdminRepository(req, res);
-    this.jwt = new JWTToken(req, res);
+  constructor() {
+    this.adminRepository = new AdminRepository();
+    this.jwt = new JWTToken();
   }
 
   /**
@@ -36,7 +30,7 @@ class AuthService {
       return { ...admin, token };
     } catch (error) {
       await this.adminRepository.closeDb();
-      await new ErrorHandler(this.res, error);
+      throw error;
     }
   }
 }

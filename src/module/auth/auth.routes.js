@@ -1,4 +1,4 @@
-const { CustomError } = require("../../shared/helper/lib");
+const { CustomError, ErrorHandler } = require("../../shared/helper/lib");
 const { rateLimiter } = require("../../shared/helper/utility");
 const AuthController = require("./auth.controller");
 
@@ -19,7 +19,9 @@ class AuthRoute {
       } else {
         throw new CustomError(404, "This endpoint does not exist!");
       }
-    } catch (error) {}
+    } catch (error) {
+      await new ErrorHandler(this.res, error);
+    }
   }
 }
 

@@ -33,13 +33,14 @@ class ErrorHandler {
         message = "Internal server error!";
       }
 
-      // console.log(this.error);
+      console.log(4444444, this.error);
 
       this.res.writeHead(status, { "Content-Type": "application/json" });
       this.res.end(
         JSON.stringify({ statusCode: status, data: {}, message: message }),
       );
     } catch (error) {
+      console.log(error);
       console.log("catch handler");
       this.res.writeHead(500, { "Content-Type": "application/json" });
       this.res.end(

@@ -1,13 +1,11 @@
 const { AdminModel } = require("../../model");
-const { ErrorHandler, CustomError } = require("../../shared/helper/lib");
+const { CustomError } = require("../../shared/helper/lib");
 const { hashed } = require("../../shared/helper/utility");
 const AdminRepository = require("./admin.repository");
 
 class AdminService {
-  constructor(req, res) {
-    this.req = req;
-    this.res = res;
-    this.repository = new AdminRepository(req, res);
+  constructor() {
+    this.repository = new AdminRepository();
   }
 
   /**
@@ -26,7 +24,8 @@ class AdminService {
       await this.repository.closeDb();
       return data;
     } catch (error) {
-      new ErrorHandler(this.res, error);
+      await this.repository.closeDb();
+      throw error;
     }
   }
 
@@ -41,7 +40,7 @@ class AdminService {
       return data;
     } catch (error) {
       await this.repository.closeDb();
-      new ErrorHandler(this.res, error);
+      throw error;
     }
   }
 
@@ -51,17 +50,17 @@ class AdminService {
    * @return {AdminModel}
    */
   async findOne(id) {
-    // try {
-    const data = await this.repository.findOne(id);
-    if (!data) {
-      throw new CustomError(404, "Admin not found!");
+    try {
+      const data = await this.repository.findOne(id);
+      if (!data) {
+        throw new CustomError(404, "Admin not found!");
+      }
+      await this.repository.closeDb();
+      return data;
+    } catch (error) {
+      await this.repository.closeDb();
+      throw error;
     }
-    await this.repository.closeDb();
-    return data;
-    // } catch (error) {
-    //   await this.repository.closeDb();
-    //   await new ErrorHandler(this.res, error);
-    // }
   }
 
   /**
@@ -76,9 +75,11 @@ class AdminService {
         body.password = await hashed(body.password);
       }
       const data = await this.repository.update(id, body);
+      await this.repository.closeDb();
       return data;
     } catch (error) {
-      new ErrorHandler(this.res, error);
+      await this.repository.closeDb();
+      throw error;
     }
   }
 
@@ -91,10 +92,11 @@ class AdminService {
       await this.findOne(id);
 
       const data = await this.repository.remove(id);
+      await this.repository.closeDb();
       return data;
     } catch (error) {
       await this.repository.closeDb();
-      await new ErrorHandler(res, error);
+      throw error;
     }
   }
 }
