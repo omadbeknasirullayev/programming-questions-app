@@ -51,16 +51,34 @@ class AdminService {
    * @return {AdminModel}
    */
   async findOne(id) {
+    // try {
+    const data = await this.repository.findOne(id);
+    if (!data) {
+      throw new CustomError(404, "Admin not found!");
+    }
+    await this.repository.closeDb();
+    return data;
+    // } catch (error) {
+    //   await this.repository.closeDb();
+    //   await new ErrorHandler(this.res, error);
+    // }
+  }
+
+  /**
+   * update admin Service
+   * @param {number} id
+   * @param {AdminModel} body
+   */
+  async update(id, body) {
     try {
-      const data = await this.repository.findOne(id);
-      if (!data) {
-        throw new CustomError(404, "Admin not found!");
+      await this.getOne(id);
+      if (body.password) {
+        body.password = await hashed(body.password);
       }
-      await this.repository.closeDb();
+      const data = await this.repository.update(id, body);
       return data;
     } catch (error) {
-      await this.repository.closeDb();
-      await new ErrorHandler(this.res, error);
+      new ErrorHandler(this.res, error);
     }
   }
 

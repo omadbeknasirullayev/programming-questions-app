@@ -1,7 +1,8 @@
 class BaseValidation {
-  constructor(data) {
+  constructor(data, validators) {
     this.data = data;
     this.error = [];
+    Object.assign(this, ...validators);
   }
 
   async getOneParamValidate() {
@@ -21,6 +22,20 @@ class BaseValidation {
   isValid() {
     return this.error.length;
   }
+  /**
+   * Keraksiz fieldlarni tekshirish
+   * @param {string[]} allowedFields
+   */
+  checkExtraFields(allowedFields) {
+    const receivedFields = Object.keys(this.data);
+    const extraFields = receivedFields.filter(
+      (field) => !allowedFields.includes(field),
+    );
+
+    if (extraFields.length > 0) {
+      this.error.push(`Extra fields sent: ${extraFields.join(", ")}`);
+    }
+  }
 }
 
-module.exports = BaseValidation
+module.exports = BaseValidation;

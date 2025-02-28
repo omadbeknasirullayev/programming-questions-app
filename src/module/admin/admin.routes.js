@@ -1,4 +1,4 @@
-const { CustomError } = require("../../shared/helper/lib");
+const { CustomError, ErrorHandler } = require("../../shared/helper/lib");
 const { rateLimiter } = require("../../shared/helper/utility");
 const AdminController = require("./admin.controller");
 
@@ -11,6 +11,7 @@ class AdminRoute {
 
   async route() {
     try {
+      console.log(111);
       await rateLimiter.consume(this.req.socket.remoteAddress);
       const method = this.req.method;
       const url = this.req.url;
@@ -20,10 +21,14 @@ class AdminRoute {
         await this.controller.findAll();
       } else if (method == "GET" && url.startsWith("/admin/get-one/")) {
         await this.controller.findOne();
+      } else if (method == "PATCH" && url.startsWith("/admin/update/")) {
+        await this.controller.update();
       } else {
         throw new CustomError(404, "This endpoint does not exist!");
       }
-    } catch (error) {}
+    } catch (error) {
+      await new ErrorHandler(this.res, error);
+    }
   }
 }
 

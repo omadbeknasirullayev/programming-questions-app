@@ -50,10 +50,29 @@ class AdminController {
 
   /** find one admin controller */
   async findOne() {
+    // try {
+    console.log(222);
+    await this.authGuard.check("admin");
+    const id = await getParam(this.req, this.res);
+    const result = await this.service.findOne(id);
+    await this.response(200, result, "success");
+    // } catch (error) {
+    //   await new ErrorHandler(this.res, error);
+    // }
+  }
+
+  /** update admin controller */
+  async update() {
     try {
       await this.authGuard.check("admin");
       const id = await getParam(this.req, this.res);
-      const result = await this.service.findOne(id);
+      const body = await bodyParser(this.req);
+      const validate = new AdminValidation(body);
+      await validate.updateValidation();
+      if (validate.isValid()) {
+        throw new ValidationError(422, validate.getErrors());
+      }
+      const result = await this.service.update(id, body);
       await this.response(200, result, "success");
     } catch (error) {
       await new ErrorHandler(this.res, error);

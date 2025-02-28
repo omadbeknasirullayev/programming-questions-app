@@ -1,3 +1,6 @@
+const db = require("../../config/postgres-client");
+const { ErrorHandler } = require("../helper/lib");
+
 class BaseRepository {
   constructor(req, res, dbName) {
     this.req = req;
@@ -8,13 +11,9 @@ class BaseRepository {
 
   /** find all admin repository */
   async findAll() {
-    try {
-      const query = `SELECT * FROM ${this.dbName};`;
-      const data = await this.db.query(query);
-      return data;
-    } catch (error) {
-      await new ErrorHandler(this.res, error);
-    }
+    const query = `SELECT * FROM ${this.dbName};`;
+    const data = await this.db.query(query);
+    return data;
   }
 
   /**
@@ -22,13 +21,9 @@ class BaseRepository {
    * @param {number} id
    */
   async findOne(id) {
-    try {
-      const query = `SELECT * FROM ${this.dbName} WHERE id = ${id};`;
-      const data = await this.db.query(query);
-      return data[0];
-    } catch (error) {
-      await new ErrorHandler(this.res, error);
-    }
+    const query = `SELECT * FROM ${this.dbName} WHERE id = ${id};`;
+    const data = await this.db.query(query);
+    return data[0];
   }
 
   /**
@@ -36,23 +31,23 @@ class BaseRepository {
    * @param {number} id
    */
   async remove(id) {
-    try {
-      const query = `DELETE FROM ${this.dbName} where id = ${id};`;
-      const data = await this.db.query(query);
+    // try {
+    const query = `DELETE FROM ${this.dbName} where id = ${id};`;
+    const data = await this.db.query(query);
 
-      return data;
-    } catch (error) {
-      await new ErrorHandler(this.res, error);
-    }
+    return data;
+    // } catch (error) {
+    //   await new ErrorHandler(this.res, error);
+    // }
   }
 
   /** close db */
   async closeDb() {
-    try {
-      await this.db.close();
-    } catch (error) {
-      await new ErrorHandler(this.res, error);
-    }
+    // try {
+    await this.db.close();
+    // } catch (error) {
+    //   await new ErrorHandler(this.res, error);
+    // }
   }
 }
 

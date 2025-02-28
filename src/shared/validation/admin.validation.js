@@ -1,29 +1,48 @@
 const BaseValidation = require("./base.validation");
+const { StringValidation } = require("./validators");
 
 class AdminValidation extends BaseValidation {
   constructor(data) {
-    super(data, [])
+    super(data, [StringValidation]);
   }
 
-  /** create validation */
+  /** Create validation */
   async createValidation() {
     try {
-      if (!this.data.fullname && typeof this.data.fullaname !== "string") {
-        this.error.push("fullname must be a string!")
-      }
+      allowedFields = ["fullname", "username", "password"];
+      this.checkExtraFields(allowedFields); // Keraksiz fieldlarni tekshiramiz
 
-      if (!this.data.username && typeof this.data.username !== "string") {
-        this.error.push("username must be a string")
-      }
-
-      if (!this.data.password && typeof this.data.password !== "string") {
-        this.error.push("password must be a string")
-      }
-
+      this.isString(this.data.fullname, "fullname");
+      this.isString(this.data.username, "username");
+      this.isString(this.data.password, "password");
     } catch (error) {
-      
+      console.error(error);
+    }
+  }
+
+  /** Update validation */
+  async updateValidation() {
+    try {
+      allowedFields = ["fullname", "username", "password"];
+      this.checkExtraFields(allowedFields);
+
+      if (Object.keys(this.data).length === 0) {
+        this.error.push("At least one field is required for update.");
+      }
+
+      if (this.data.fullname !== undefined) {
+        this.isString(this.data.fullname, "fullname");
+      }
+      if (this.data.username !== undefined) {
+        this.isString(this.data.username, "username");
+      }
+      if (this.data.password !== undefined) {
+        this.isString(this.data.password, "password");
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 }
 
-module.exports = AdminValidation
+module.exports = AdminValidation;
