@@ -1,5 +1,5 @@
-const { Pool } = require('pg');
-const config = require('./config');
+const { Pool } = require("pg");
+const config = require("./config");
 
 class PostgreSQLClient {
   constructor() {
@@ -18,7 +18,7 @@ class PostgreSQLClient {
       const result = await client.query(queryText, params);
       return result.rows;
     } catch (err) {
-      console.error('Database query error:', err);
+      console.error("Database query error:", err);
       throw err;
     } finally {
       client.release();

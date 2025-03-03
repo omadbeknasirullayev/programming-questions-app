@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../../../config/config");
 const { AdminModel } = require("../../../model");
+const { CustomError } = require("./make-errors");
 
 class JWTToken {
   constructor() {}
@@ -25,8 +26,12 @@ class JWTToken {
 
   /** compire token */
   async verifyToken(token) {
-    const payload = await jwt.verify(token, config.token_key);
-    return payload;
+    try {
+      const payload = await jwt.verify(token, config.token_key);
+      return payload;
+    } catch (error) {
+      throw new CustomError(401, "Unauthorized!");
+    }
   }
 }
 
