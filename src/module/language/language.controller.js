@@ -15,57 +15,87 @@ class LanguageController {
 
   /** create language controller api */
   async create() {
-    await this.authGuard.check("admin");
-    const data = await bodyParser(this.req);
-    const validate = new LanguageValidation(data);
-    await validate.createValidate();
+    try {
+      await this.authGuard.check("admin");
+      const data = await bodyParser(this.req);
+      const validate = new LanguageValidation(data);
+      await validate.createValidate();
 
-    if (validate.isValid()) {
-      throw new ValidationError(422, validate.getErrors());
+      if (validate.isValid()) {
+        throw new ValidationError(422, validate.getErrors());
+      }
+
+      const result = await this.service.create(data);
+      await this.service.repository.closeDb();
+      await this.response(201, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
     }
-
-    const result = await this.service.create(data);
-    await this.response(201, result, "success");
   }
 
   /** get all language controller api */
   async getAll() {
-    const result = await this.service.getAll();
-    await this.response(200, result, "success");
+    try {
+      const result = await this.service.getAll();
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
+    }
   }
 
   /** get one language controller api */
   async getOne() {
-    const id = await getParam(this.req);
+    try {
+      const id = await getParam(this.req);
+      const result = await this.service.getOne(id);
 
-    const result = await this.service.getOne(id);
-    await this.response(200, result, "success");
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
+    }
   }
 
   /** update language controller api */
   async update() {
-    await this.authGuard.check("admin");
-    const id = await getParam(this.req);
-    const body = await bodyParser(this.req);
+    try {
+      await this.authGuard.check("admin");
+      const id = await getParam(this.req);
+      const body = await bodyParser(this.req);
 
-    const validate = new LanguageValidation(body);
-    validate.updateValidation();
+      const validate = new LanguageValidation(body);
+      validate.updateValidation();
 
-    if (validate.isValid()) {
-      throw new ValidationError(422, validate.getErrors());
+      if (validate.isValid()) {
+        throw new ValidationError(422, validate.getErrors());
+      }
+      const result = await this.service.update(id, body);
+
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
     }
-
-    const result = await this.service.update(id, body);
-    await this.response(200, result, "success");
   }
 
   /** remove language controller api */
   async remove() {
-    await this.authGuard.check("admin");
-    const id = getParam(this.req);
+    try {
+      await this.authGuard.check("admin");
+      const id = getParam(this.req);
+      const result = await this.service.remove(id);
 
-    const result = await this.service.remove(id);
-    await this.response(200, result, "success");
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
+    }
   }
 }
 

@@ -15,53 +15,82 @@ class AdminController {
 
   /** create admin controller */
   async create() {
-    await this.authGuard.check("admin");
-    const body = await bodyParser(this.req);
-    const validate = new AdminValidation(body);
-    await validate.createValidation();
-    if (validate.isValid()) {
-      throw new ValidationError(422, validate.getErrors());
+    try {
+      await this.authGuard.check("admin");
+      const body = await bodyParser(this.req);
+      const validate = new AdminValidation(body);
+      await validate.createValidation();
+      if (validate.isValid()) {
+        throw new ValidationError(422, validate.getErrors());
+      }
+
+      const result = await this.service.create(body);
+      await this.service.repository.closeDb();
+      await this.response(201, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
     }
-
-    const result = await this.service.create(body);
-
-    await this.response(201, result, "success");
   }
 
   /** find all admin controller */
   async findAll() {
-    await this.authGuard.check("admin");
-    const result = await this.service.findAll();
-    await this.response(200, result, "success");
+    try {
+      await this.authGuard.check("admin");
+      const result = await this.service.findAll();
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
+    }
   }
 
   /** find one admin controller */
   async findOne() {
-    await this.authGuard.check("admin");
-    const id = await getParam(this.req);
-    const result = await this.service.findOne(id);
-    await this.response(200, result, "success");
+    try {
+      await this.authGuard.check("admin");
+      const id = await getParam(this.req);
+      const result = await this.service.findOne(id);
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
+    }
   }
 
   /** update admin controller */
   async update() {
-    await this.authGuard.check("admin");
-    const id = await getParam(this.req);
-    const body = await bodyParser(this.req);
-    const validate = new AdminValidation(body);
-    await validate.updateValidation();
-    if (validate.isValid()) {
-      throw new ValidationError(422, validate.getErrors());
+    try {
+      await this.authGuard.check("admin");
+      const id = await getParam(this.req);
+      const body = await bodyParser(this.req);
+      const validate = new AdminValidation(body);
+      await validate.updateValidation();
+      if (validate.isValid()) {
+        throw new ValidationError(422, validate.getErrors());
+      }
+      const result = await this.service.update(id, body);
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
     }
-    const result = await this.service.update(id, body);
-    await this.response(200, result, "success");
   }
 
   /** remove admin controller */
   async remove() {
-    const id = getParam(this.req);
-    const result = await this.service.remove(id);
-    await this.response(200, result, "success");
+    try {
+      const id = getParam(this.req);
+      const result = await this.service.remove(id);
+      await this.service.repository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.repository.closeDb();
+      throw error;
+    }
   }
 }
 

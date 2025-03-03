@@ -13,25 +13,19 @@ class AuthService {
    * @param {{username: string, password: string}} body
    */
   async adminLogin(body) {
-    try {
-      const admin = await this.adminRepository.findByUsername(body.username);
+    const admin = await this.adminRepository.findByUsername(body.username);
 
-      if (!admin) {
-        throw new CustomError(401, "Incorrect username or password!");
-      }
-
-      const check = await compaire(admin.password, body.password);
-      if (!check) {
-        throw new CustomError(401, "Incorrect username or password!");
-      }
-
-      const token = await this.jwt.generateToken(admin);
-      await this.adminRepository.closeDb();
-      return { ...admin, token };
-    } catch (error) {
-      await this.adminRepository.closeDb();
-      throw error;
+    if (!admin) {
+      throw new CustomError(401, "Incorrect username or password!");
     }
+
+    const check = await compaire(admin.password, body.password);
+    if (!check) {
+      throw new CustomError(401, "Incorrect username or password!");
+    }
+
+    const token = await this.jwt.generateToken(admin);
+    return { ...admin, token };
   }
 }
 

@@ -13,17 +13,22 @@ class AuthController {
 
   /** admin login auth controller  */
   async adminLogin() {
-    const body = await bodyParser(this.req);
-    const validate = new AuthValidation(body);
-    await validate.adminLoginValidation();
+    try {
+      const body = await bodyParser(this.req);
+      const validate = new AuthValidation(body);
+      await validate.adminLoginValidation();
 
-    if (validate.isValid()) {
-      throw new ValidationError(422, validate.getErrors());
+      if (validate.isValid()) {
+        throw new ValidationError(422, validate.getErrors());
+      }
+      const result = await this.service.adminLogin(body);
+
+      await this.service.adminRepository.closeDb();
+      await this.response(200, result, "success");
+    } catch (error) {
+      await this.service.adminRepository.closeDb();
+      throw error;
     }
-
-    const result = await this.service.adminLogin(body);
-
-    await this.response(200, result, "success");
   }
 }
 

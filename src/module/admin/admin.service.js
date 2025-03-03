@@ -14,19 +14,13 @@ class AdminService {
    * @return {AdminModel}
    */
   async create(body) {
-    try {
-      const check = await this.repository.findByUsername(body.username);
-      if (check) {
-        throw new CustomError(409, "This username already exists!");
-      }
-      body.password = await hashed(body.password);
-      const data = await this.repository.create(body);
-      await this.repository.closeDb();
-      return data;
-    } catch (error) {
-      await this.repository.closeDb();
-      throw error;
+    const check = await this.repository.findByUsername(body.username);
+    if (check) {
+      throw new CustomError(409, "This username already exists!");
     }
+    body.password = await hashed(body.password);
+    const data = await this.repository.create(body);
+    return data;
   }
 
   /**
@@ -34,14 +28,8 @@ class AdminService {
    * @return {AdminModel[]}
    */
   async findAll() {
-    try {
-      const data = await this.repository.findAll();
-      await this.repository.closeDb();
-      return data;
-    } catch (error) {
-      await this.repository.closeDb();
-      throw error;
-    }
+    const data = await this.repository.findAll();
+    return data;
   }
 
   /**
@@ -50,17 +38,11 @@ class AdminService {
    * @return {AdminModel}
    */
   async findOne(id) {
-    try {
-      const data = await this.repository.findOne(id);
-      if (!data) {
-        throw new CustomError(404, "Admin not found!");
-      }
-      await this.repository.closeDb();
-      return data;
-    } catch (error) {
-      await this.repository.closeDb();
-      throw error;
+    const data = await this.repository.findOne(id);
+    if (!data) {
+      throw new CustomError(404, "Admin not found!");
     }
+    return data;
   }
 
   /**
@@ -69,18 +51,12 @@ class AdminService {
    * @param {AdminModel} body
    */
   async update(id, body) {
-    try {
-      await this.getOne(id);
-      if (body.password) {
-        body.password = await hashed(body.password);
-      }
-      const data = await this.repository.update(id, body);
-      await this.repository.closeDb();
-      return data;
-    } catch (error) {
-      await this.repository.closeDb();
-      throw error;
+    await this.getOne(id);
+    if (body.password) {
+      body.password = await hashed(body.password);
     }
+    const data = await this.repository.update(id, body);
+    return data;
   }
 
   /**
@@ -88,16 +64,9 @@ class AdminService {
    * @param {number} id
    */
   async remove(id) {
-    try {
-      await this.findOne(id);
-
-      const data = await this.repository.remove(id);
-      await this.repository.closeDb();
-      return data;
-    } catch (error) {
-      await this.repository.closeDb();
-      throw error;
-    }
+    await this.findOne(id);
+    const data = await this.repository.remove(id);
+    return data;
   }
 }
 
