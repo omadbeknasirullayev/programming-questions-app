@@ -86,6 +86,8 @@ class LevelController {
   /** remove admin controller */
   async remove() {
     try {
+      await this.authGuard.check("admin");
+      
       const id = getParam(this.req);
       const result = await this.service.remove(id);
       await this.service.repository.closeDb();

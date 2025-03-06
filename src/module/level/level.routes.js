@@ -23,7 +23,7 @@ class LevelRoute {
       await this.controller.findOne();
     } else if (method == "PATCH" && url.startsWith("/level/update/")) {
       await this.controller.update();
-    } else if (method == "DELETE" && url.startsWith("/admin/remove/")) {
+    } else if (method == "DELETE" && url.startsWith("/level/remove/")) {
       await this.controller.remove();
     } else {
       throw new CustomError(404, "This endpoint does not exist!");

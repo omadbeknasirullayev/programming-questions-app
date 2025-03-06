@@ -12,7 +12,7 @@ class LevelRepository extends BaseRepository {
    * @return {LevelModel}
    */
   async create(body) {
-    const query = `INSERT INTO levels(name, position, languageId) VALUES($1, $2, $3) RETURNING *;`;
+    const query = `INSERT INTO levels(name, position, "languageId") VALUES($1, $2, $3) RETURNING *;`;
 
     const data = await this.db.query(query, [
       body.name,
