@@ -3,6 +3,7 @@ const AdminValidation = require("./admin.validation");
 const AuthValidation = require("./auth.validation");
 const ParamValidation = require("./param.validation");
 const LevelValidation = require("./level.validation");
+const CategoryValidation = require("./catogory.validation");
 
 module.exports = {
   LanguageValidation,
@@ -10,4 +11,5 @@ module.exports = {
   AuthValidation,
   ParamValidation,
   LevelValidation,
+  CategoryValidation,
 };

@@ -1,5 +1,6 @@
 const AdminRoute = require("../module/admin/admin.routes");
 const AuthRoute = require("../module/auth/auth.routes");
+const CategoryRoute = require("../module/category/category.routes");
 const LanguageRoute = require("../module/language/language.routes");
 const LevelRoute = require("../module/level/level.routes");
 const { CustomError, ErrorHandler } = require("../shared/helper/lib");
@@ -15,6 +16,8 @@ class AllRoutes {
         await new LanguageRoute(req, res).route();
       } else if (req.url.startsWith("/level/")) {
         await new LevelRoute(req, res).route();
+      } else if (req.url.startsWith("/category/")) {
+        await new CategoryRoute(req, res).route();
       } else {
         throw new CustomError(404, "This endpoint does not exists!");
       }

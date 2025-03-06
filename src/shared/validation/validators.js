@@ -10,7 +10,6 @@ const StringValidation = {
 
 const NumberValidation = {
   isNumber(field, fieldName) {
-    console.log(999999, this);
     if (field === undefined || typeof field !== "number" || isNaN(field)) {
       this.error.push(`${fieldName} must be a valid number`);
       return false;

@@ -38,6 +38,17 @@ const migration = {
         updatedAt TIMESTAMP
       );
   `,
+  category: `
+      CREATE TABLE IF NOT EXISTS categories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(128) NOT NULL,
+        position INTEGER NOT NULL,
+        "languageId" INTEGER REFERENCES languages(id) ON DELETE CASCADE,
+        "levelId" INTEGER REFERENCES levels(id) ON DELETE CASCADE,
+        createdAt TIMESTAMP DEFAULT NOW(),
+        updatedAt TIMESTAMP
+      );
+  `,
 };
 
 async function run() {
