@@ -49,6 +49,18 @@ const migration = {
         updatedAt TIMESTAMP
       );
   `,
+  question: `
+      CREATE TABLE IF NOT EXISTS questions (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(128) NOT NULL,
+        position INTEGER NOT NULL,
+        "languageId" INTEGER REFERENCES languages(id) ON DELETE CASCADE,
+        "levelId" INTEGER REFERENCES levels(id) ON DELETE CASCADE,
+        "categoryId" INTEGER REFERENCES categories(id) ON DELETE CASCADE,
+        createdAt TIMESTAMP DEFAULT NOW(),
+        updatedAt TIMESTAMP
+      );
+  `,
 };
 
 async function run() {
@@ -58,6 +70,7 @@ async function run() {
       console.log(`Running migration: ${key}`);
       await db.query(query); // Asinxron bajarish
     }
+    db.close()
     console.log("All migrations completed successfully!");
   } catch (error) {
     console.error("Migration error:", error);
