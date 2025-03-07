@@ -33,17 +33,17 @@ Loyihani ishga tushirish uchun quyidagi qadamlarni bajaring:
 git clone https://github.com/omadbeknasirullayev/programming-questions-app.git
 ```
 
-### 2 Packagelarni yuklab olish
+### 2️⃣ Packagelarni yuklab olish
 ``` bash
 npm install
 ```
 
-### 3 Loyihani run qilish
+### 3️⃣ Loyihani run qilish
 ``` bash
 node src/main.js
 ```
 
-### Postmant collection. Loyihaning postmandagi apilari
+## Postmant collection. Loyihaning postmandagi apilari
 
 ```bash
 
